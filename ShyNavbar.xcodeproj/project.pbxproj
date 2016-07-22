@@ -9,19 +9,17 @@
 /* Begin PBXBuildFile section */
 		D10F967F1D412C5D000515B6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10F967E1D412C5D000515B6 /* AppDelegate.swift */; };
 		D10F96811D412C5D000515B6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10F96801D412C5D000515B6 /* ViewController.swift */; };
-		D10F96841D412C5D000515B6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D10F96821D412C5D000515B6 /* Main.storyboard */; };
 		D10F96861D412C5D000515B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D10F96851D412C5D000515B6 /* Assets.xcassets */; };
-		D10F96891D412C5D000515B6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D10F96871D412C5D000515B6 /* LaunchScreen.storyboard */; };
+		D10F96911D42C6C6000515B6 /* ShyNavbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10F96901D42C6C6000515B6 /* ShyNavbar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D10F967B1D412C5D000515B6 /* ShyNavbar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShyNavbar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D10F967E1D412C5D000515B6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		D10F96801D412C5D000515B6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		D10F96831D412C5D000515B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		D10F96851D412C5D000515B6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		D10F96881D412C5D000515B6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D10F968A1D412C5D000515B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D10F96901D42C6C6000515B6 /* ShyNavbar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShyNavbar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,10 +54,9 @@
 			children = (
 				D10F967E1D412C5D000515B6 /* AppDelegate.swift */,
 				D10F96801D412C5D000515B6 /* ViewController.swift */,
-				D10F96821D412C5D000515B6 /* Main.storyboard */,
 				D10F96851D412C5D000515B6 /* Assets.xcassets */,
-				D10F96871D412C5D000515B6 /* LaunchScreen.storyboard */,
 				D10F968A1D412C5D000515B6 /* Info.plist */,
+				D10F96901D42C6C6000515B6 /* ShyNavbar.swift */,
 			);
 			path = ShyNavbar;
 			sourceTree = "<group>";
@@ -122,9 +119,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D10F96891D412C5D000515B6 /* LaunchScreen.storyboard in Resources */,
 				D10F96861D412C5D000515B6 /* Assets.xcassets in Resources */,
-				D10F96841D412C5D000515B6 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,30 +131,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				D10F96811D412C5D000515B6 /* ViewController.swift in Sources */,
+				D10F96911D42C6C6000515B6 /* ShyNavbar.swift in Sources */,
 				D10F967F1D412C5D000515B6 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		D10F96821D412C5D000515B6 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D10F96831D412C5D000515B6 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		D10F96871D412C5D000515B6 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				D10F96881D412C5D000515B6 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		D10F968B1D412C5D000515B6 /* Debug */ = {
