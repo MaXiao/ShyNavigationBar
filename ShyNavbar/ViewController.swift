@@ -36,6 +36,10 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         scrollView.contentSize = CGSize(width: view.frame.width, height: 5000)
         scrollView.delegate = self
         
+        if let navbar = navigationController?.navigationBar as? ShyNavbar {
+            navbar.scrollView = scrollView
+        }
+        
         let label = UILabel(frame: CGRect(x: 0, y: 10, width: view.frame.width, height: 20))
         label.text = "Top"
         label.textAlignment = .Center
@@ -49,53 +53,22 @@ class ViewController: UIViewController, UIScrollViewDelegate {
 
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        if var frame = navigationController?.navigationBar.frame {
-            let bottomMargin = frame.height - 20
-            let scrollOffset = scrollView.contentOffset.y;
-            
-            // set a navbar expanding threshold for scrolling back
-            if scrollOffset - startingPointY < 0 && scrollOffset - startingPointY > -scrollBackThreshold && (startingPointY > -20) {
-                previousScrollViewY = scrollOffset
-                return
-            }
-            
-            let scrollDiff = scrollOffset - previousScrollViewY
-            let scrollHeight = scrollView.frame.height
-            let scrollContentSizeHeight = scrollView.contentSize.height + scrollView.contentInset.bottom
-            if scrollOffset <= -scrollView.contentInset.top {
-                frame.origin.y = 20
-            } else if scrollOffset + scrollHeight >= scrollContentSizeHeight {
-                frame.origin.y = -bottomMargin
-            } else {
-                frame.origin.y = min(20, max(-bottomMargin, frame.origin.y - scrollDiff))
-            }
-            navigationController?.navigationBar.frame = frame
-            
-            // adjust navbar items
-            let percentHidden = (20 - frame.minY) / (frame.height)
-            // times 2, so that items will be hidden half way towards top.
-            updateBarButtonItems(1 - percentHidden * 2)
-            
-            // adjust scroll indicator inset to match navbar position
-            scrollView.scrollIndicatorInsets = UIEdgeInsets(top: frame.maxY, left: 0, bottom: 0, right: 0)
-        }
-        previousScrollViewY = scrollView.contentOffset.y
-        
+        print("original scrollViewDidScroll")
     }
-    
-    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        startingPointY = scrollView.contentOffset.y
-    }
-    
-    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-        self.stoppedScrolling()
-    }
-    
-    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        if !decelerate {
-            self.stoppedScrolling()
-        }
-    }
+//
+//    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
+//        startingPointY = scrollView.contentOffset.y
+//    }
+//    
+//    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+//        self.stoppedScrolling()
+//    }
+//    
+//    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+//        if !decelerate {
+//            self.stoppedScrolling()
+//        }
+//    }
     
     func updateBarButtonItems(percent: CGFloat) {
         guard let subviews = navigationController?.navigationBar.subviews else {

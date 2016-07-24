@@ -17,7 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         self.window?.makeKeyAndVisible()
-        self.window?.rootViewController = UINavigationController(rootViewController: ViewController())
+        let nav = UINavigationController(navigationBarClass: ShyNavbar.self, toolbarClass: nil)
+        nav.viewControllers = [ViewController()]
+        self.window?.rootViewController = nav
         return true
     }
 
