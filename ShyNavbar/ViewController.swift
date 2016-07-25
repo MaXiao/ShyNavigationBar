@@ -14,6 +14,8 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     var startingPointY: CGFloat = 0
     let parallaxFactor: CGFloat = 0.8
     var scrollView: UIScrollView?
+    
+    let subbar = UIView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,14 +38,28 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         scrollView.contentSize = CGSize(width: view.frame.width, height: 5000)
         scrollView.delegate = self
         
+        var insets = scrollView.contentInset
+        insets.top += 40
+        scrollView.contentInset = insets
+        
+        scrollView.contentOffset.y -= 40
+        scrollView.scrollIndicatorInsets = insets
+        
         if let navbar = navigationController?.navigationBar as? ShyNavbar {
             navbar.scrollView = scrollView
+            
+            subbar.backgroundColor = UIColor.blueColor()
+            subbar.frame = CGRect(x: 0, y: navbar.frame.maxY, width: view.frame.width, height: 40)
+//            view.addSubview(subbar)
         }
         
         let label = UILabel(frame: CGRect(x: 0, y: 10, width: view.frame.width, height: 20))
         label.text = "Top"
         label.textAlignment = .Center
         scrollView.addSubview(label)
+        
+        
+        previousScrollViewY = scrollView.contentOffset.y
     }
 
     override func didReceiveMemoryWarning() {
@@ -53,63 +69,29 @@ class ViewController: UIViewController, UIScrollViewDelegate {
 
 
     func scrollViewDidScroll(scrollView: UIScrollView) {
-        print("original scrollViewDidScroll")
-    }
-//
-//    func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-//        startingPointY = scrollView.contentOffset.y
-//    }
-//    
-//    func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
-//        self.stoppedScrolling()
-//    }
-//    
-//    func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-//        if !decelerate {
-//            self.stoppedScrolling()
-//        }
-//    }
-    
-    func updateBarButtonItems(percent: CGFloat) {
-        guard let subviews = navigationController?.navigationBar.subviews else {
-            return
-        }
+//        print("original scrollViewDidScroll")
+        let scrollDiff = scrollView.contentOffset.y -  previousScrollViewY
         
-        print((subviews[1].subviews[0] as! UILabel).frame)
-        for (index, view) in subviews.enumerate() {
-            if index > 0 && index < subviews.count - 1{
-                view.alpha = percent
-                
-                var frame = view.frame
-                let originalY = floor((44 - frame.height) / 2)
-                let offset = 44 * (1 - parallaxFactor) * (1 - percent)
-                let y = CGFloat(originalY + offset)
-                frame.origin.y = y
-                view.frame = frame
-            }
-        }
-    }
-    
-    func stoppedScrolling() {
-        if let frame = self.navigationController?.navigationBar.frame {
-            if frame.origin.y < 20 {
-                self.animateNavbarTo(-(frame.height - 20))
-            }
-        }
-    }
-    
-    func animateNavbarTo(y: CGFloat) {
-        UIView.animateWithDuration(0.2) { 
-            if var frame = self.navigationController?.navigationBar.frame {
-                let alpha: CGFloat = frame.origin.y >= y ? 0 : 1
-                if alpha == 0 {
-                    self.scrollView?.contentOffset.y += (frame.origin.y - y)
-                }
-                frame.origin.y = y
-                self.navigationController?.navigationBar.frame = frame
-                self.updateBarButtonItems(alpha)
-            }
-        }
+//        var frame = subbar.frame
+//        
+//        let scrollOffset = scrollView.contentOffset.y
+//        let scrollHeight = scrollView.frame.height
+//        let scrollContentSizeHeight = scrollView.contentSize.height + scrollView.contentInset.bottom
+//        
+//        if let navbarFrame = navigationController?.navigationBar.frame {
+//            if scrollOffset <= -scrollView.contentInset.top {
+//                frame.origin.y = 64
+//            } else if scrollOffset + scrollHeight >= scrollContentSizeHeight {
+//                frame.origin.y = navbarFrame.maxY - frame.height
+//            } else {
+//                frame.origin.y = min(64, max(navbarFrame.maxY - frame.height, frame.origin.y - scrollDiff))
+//            }
+//        }
+//        
+//        subbar.frame = frame
+        
+        
+        previousScrollViewY = scrollView.contentOffset.y
     }
     
     func test() {
