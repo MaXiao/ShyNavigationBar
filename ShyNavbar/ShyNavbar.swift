@@ -97,7 +97,7 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         updateBarButtonItems(1 - percentHidden * 2)
         
         // adjust scroll indicator inset to match navbar position
-        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: frame.maxY + scrollUpThreshold, left: 0, bottom: 0, right: 0)
+        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: frame.maxY + scrollUpThreshold - 5, left: 0, bottom: 0, right: 0)
     
         previousScrollViewY = scrollView.contentOffset.y
             

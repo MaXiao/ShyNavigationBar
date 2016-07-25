@@ -37,7 +37,6 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         scrollView.contentInset = insets
         
         scrollView.contentOffset.y -= 40
-        scrollView.scrollIndicatorInsets = insets
         
         if let navbar = navigationController?.navigationBar as? ShyNavbar {
             navbar.scrollView = scrollView
