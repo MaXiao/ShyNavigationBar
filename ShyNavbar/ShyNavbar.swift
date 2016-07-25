@@ -140,8 +140,24 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
     }
     
     func stoppedScrolling() {
+        if subbar.frame.origin.y < 64 && subbar.frame.origin.y > 64 - subbar.frame.height {
+            self.animateSubbarTo(64)
+        }
+        
         if frame.origin.y < statusBarHeight {
             self.animateNavbarTo(-(frame.height - statusBarHeight))
+            self.animateSubbarTo(-(subbar.frame.height - statusBarHeight))
+        }
+    }
+    
+    func animateSubbarTo(y: CGFloat) {
+        UIView.animateWithDuration(0.2) {
+            var frame = self.subbar.frame
+            
+            self.scrollView?.contentOffset.y += frame.origin.y - y
+            
+            frame.origin.y = y
+            self.subbar.frame = frame
         }
     }
     
