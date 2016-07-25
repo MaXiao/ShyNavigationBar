@@ -11,7 +11,7 @@ import UIKit
 class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
     var previousScrollViewY: CGFloat = 0
     var scrollDownThreshold: CGFloat = 100
-    var scrollUpThreshold: CGFloat = 40
+    var scrollUpThreshold: CGFloat = 45
     var startingPointY: CGFloat = 0
     let parallaxFactor: CGFloat = 0.8
     let statusBarHeight: CGFloat = 20
@@ -71,9 +71,9 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         if scrollOffset <= -scrollView.contentInset.top {
             subFrame.origin.y = 64
         } else if scrollOffset + scrollHeight >= scrollContentSizeHeight {
-            subFrame.origin.y = frame.maxY - frame.height
+            subFrame.origin.y = frame.maxY - 5 - frame.height
         } else {
-            subFrame.origin.y = min(64, max(frame.maxY - subFrame.height, subFrame.origin.y - scrollDiff))
+            subFrame.origin.y = min(64, max(frame.maxY - 5 - subFrame.height, subFrame.origin.y - scrollDiff))
         }
         subbar.frame = subFrame
         
