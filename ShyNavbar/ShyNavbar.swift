@@ -66,7 +66,7 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         // Checking conditions as follow:
         // 1. is scrolling down
         // 2. diff is larger than certain threshold or scrollview reach top
-        if scrollDiff < 0 && startingPointY - scrollOffset < scrollDownThreshold && (scrollOffset > -statusBarHeight) {
+        if (scrollDiff < 0) && (startingPointY - scrollOffset < scrollDownThreshold) && (scrollOffset > -statusBarHeight) {
             previousScrollViewY = scrollOffset
             return
         }
@@ -151,19 +151,22 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
     
     func stoppedScrolling() {
         if subbar.frame.origin.y < 64 && subbar.frame.origin.y > 64 - subbar.frame.height {
-            animateSubbarTo(64)
-            self.scrollView?.contentOffset.y += frame.origin.y - 64
+            animateSubbarTo(64, shouldAdjustScrollView: true)
+            
         }
         
         if frame.origin.y < statusBarHeight || subbar.frame.origin.y <= 64 - subbar.frame.height {
             animateNavbarTo(-(frame.height - statusBarHeight))
-            animateSubbarTo(-(subbar.frame.height - statusBarHeight))
+            animateSubbarTo(-(subbar.frame.height - statusBarHeight), shouldAdjustScrollView: false)
         }
     }
     
-    func animateSubbarTo(y: CGFloat) {
+    func animateSubbarTo(y: CGFloat, shouldAdjustScrollView shouldAdjust: Bool ) {
         UIView.animateWithDuration(0.2) {
             var frame = self.subbar.frame
+            if shouldAdjust {
+                self.scrollView?.contentOffset.y += frame.origin.y - 64
+            }
             frame.origin.y = y
             self.subbar.frame = frame
         }
