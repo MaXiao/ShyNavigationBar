@@ -58,7 +58,7 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         let scrollDiff = scrollOffset - previousScrollViewY
         let scrollHeight = scrollView.frame.height
         let scrollContentSizeHeight = scrollView.contentSize.height + scrollView.contentInset.bottom
-        print("offset: \(scrollOffset)")
+//        print("offset: \(scrollOffset)")
         // subbar
         var subFrame = subbar.frame
         
@@ -66,14 +66,17 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         // Checking conditions as follow:
         // 1. is scrolling down
         // 2. diff is larger than certain threshold or scrollview reach top
-        if (scrollDiff < 0) && (startingPointY - scrollOffset < scrollDownThreshold) && (scrollOffset > -statusBarHeight) {
+        // 3. Is not a continuous, zigzag gesture changed from scrolling up
+        if (scrollDiff < 0) && (startingPointY - scrollOffset < scrollDownThreshold) && (scrollOffset > -statusBarHeight) && startingPointY <= scrollOffset {
             previousScrollViewY = scrollOffset
+            print("scroll down threshhold checkout")
             return
         }
         
         // Prevent glitchy behaviour when scrollview is pulled down in a rubber-band zone
         if scrollOffset < -scrollView.contentInset.top && scrollDiff > 0 {
             previousScrollViewY = scrollOffset
+            print("rubber band zone checkout")
             return
         }
         
@@ -87,8 +90,10 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         }
         subbar.frame = subFrame
         
-        // navbar frame updating
+        // Scroll-up-threshold that equals to subber height
+        // So that subbar will move before navbar
         if scrollDiff > 0 && scrollOffset - startingPointY < scrollUpThreshold {
+            print("scroll up threshold checkout")
             previousScrollViewY = scrollOffset
             return
         }
