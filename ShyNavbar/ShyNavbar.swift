@@ -58,19 +58,22 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         let scrollDiff = scrollOffset - previousScrollViewY
         let scrollHeight = scrollView.frame.height
         let scrollContentSizeHeight = scrollView.contentSize.height + scrollView.contentInset.bottom
-        
+        print("offset: \(scrollOffset)")
         // subbar
         var subFrame = subbar.frame
         
-        // set a navbar expanding threshold for scrolling back
-        if scrollOffset - startingPointY < 0 && scrollOffset - startingPointY > -scrollDownThreshold && (startingPointY > -statusBarHeight) {
+        // There is a arbitrary scroll-down-threshold before navbar reappear
+        // Checking conditions as follow:
+        // 1. is scrolling down
+        // 2. diff is larger than certain threshold or scrollview reach top
+        if scrollDiff < 0 && startingPointY - scrollOffset < scrollDownThreshold && (scrollOffset > -statusBarHeight) {
             previousScrollViewY = scrollOffset
             return
         }
         
         if scrollOffset < -scrollView.contentInset.top && scrollDiff > 0 {
             previousScrollViewY = scrollOffset
-            print("here \(scrollDiff)")
+//            print("here \(scrollDiff)")
             return
         }
         
@@ -85,7 +88,7 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         subbar.frame = subFrame
         
         // navbar frame updating
-        if scrollOffset - startingPointY > 0 && scrollOffset - startingPointY < scrollUpThreshold {
+        if scrollDiff > 0 && scrollOffset - startingPointY < scrollUpThreshold {
             previousScrollViewY = scrollOffset
             return
         }
@@ -108,12 +111,11 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
     
         previousScrollViewY = scrollView.contentOffset.y
             
-        print("offset: \(scrollView.contentOffset.y), inset: \(scrollView.contentInset.top)")
+        print("navbar y: \(frame.origin.y), subbar y: \(subbar.frame.origin.y)")
     }
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
-        startingPointY = max(-scrollView.contentInset.top, scrollView.contentOffset.y) 
-        print(startingPointY)
+        startingPointY = max(-scrollView.contentInset.top, scrollView.contentOffset.y)
         
         originalDelegate?.scrollViewWillBeginDragging?(scrollView)
     }
@@ -149,21 +151,19 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
     
     func stoppedScrolling() {
         if subbar.frame.origin.y < 64 && subbar.frame.origin.y > 64 - subbar.frame.height {
-            self.animateSubbarTo(64)
+            animateSubbarTo(64)
+            self.scrollView?.contentOffset.y += frame.origin.y - 64
         }
         
-        if frame.origin.y < statusBarHeight {
-            self.animateNavbarTo(-(frame.height - statusBarHeight))
-            self.animateSubbarTo(-(subbar.frame.height - statusBarHeight))
+        if frame.origin.y < statusBarHeight || subbar.frame.origin.y <= 64 - subbar.frame.height {
+            animateNavbarTo(-(frame.height - statusBarHeight))
+            animateSubbarTo(-(subbar.frame.height - statusBarHeight))
         }
     }
     
     func animateSubbarTo(y: CGFloat) {
         UIView.animateWithDuration(0.2) {
             var frame = self.subbar.frame
-            
-            self.scrollView?.contentOffset.y += frame.origin.y - y
-            
             frame.origin.y = y
             self.subbar.frame = frame
         }
