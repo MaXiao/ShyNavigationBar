@@ -71,9 +71,9 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
             return
         }
         
+        // Prevent glitchy behaviour when scrollview is pulled down in a rubber-band zone
         if scrollOffset < -scrollView.contentInset.top && scrollDiff > 0 {
             previousScrollViewY = scrollOffset
-//            print("here \(scrollDiff)")
             return
         }
         
