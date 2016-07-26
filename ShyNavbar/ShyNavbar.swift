@@ -80,6 +80,25 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
             return
         }
         
+        
+        
+        // Scroll-up-threshold that equals to subber height
+        // So that subbar will move before navbar
+        if scrollDiff > 0 && subbar.frame.maxY >= frame.maxY {
+            print("scroll up threshold checkout")
+            previousScrollViewY = scrollOffset
+            
+        } else {
+            if scrollOffset <= -scrollView.contentInset.top {
+                frame.origin.y = statusBarHeight
+            } else if scrollOffset + scrollHeight >= scrollContentSizeHeight {
+                frame.origin.y = -bottomMargin
+            } else {
+                frame.origin.y = min(statusBarHeight, max(-bottomMargin, frame.origin.y - scrollDiff))
+            }
+            self.frame = frame
+        }
+        
         // subbar frame updating
         if scrollOffset <= -scrollView.contentInset.top {
             subFrame.origin.y = 64
@@ -89,22 +108,6 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
             subFrame.origin.y = min(64, max(frame.maxY - 5 - subFrame.height, subFrame.origin.y - scrollDiff))
         }
         subbar.frame = subFrame
-        
-        // Scroll-up-threshold that equals to subber height
-        // So that subbar will move before navbar
-        if scrollDiff > 0 && scrollOffset - startingPointY < scrollUpThreshold {
-            print("scroll up threshold checkout")
-            previousScrollViewY = scrollOffset
-            return
-        }
-        if scrollOffset <= -scrollView.contentInset.top {
-            frame.origin.y = statusBarHeight
-        } else if scrollOffset + scrollHeight >= scrollContentSizeHeight {
-            frame.origin.y = -bottomMargin
-        } else {
-            frame.origin.y = min(statusBarHeight, max(-bottomMargin, frame.origin.y - scrollDiff))
-        }
-        self.frame = frame
         
         // adjust navbar items
         let percentHidden = (statusBarHeight - frame.minY) / (frame.height)
