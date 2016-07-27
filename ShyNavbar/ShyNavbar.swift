@@ -11,10 +11,13 @@ import UIKit
 class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
     var previousScrollViewY: CGFloat = 0
     var scrollDownThreshold: CGFloat = 100
-    var scrollUpThreshold: CGFloat = 45
-    var startingPointY: CGFloat = 0
+    var scrollUpThreshold: CGFloat = 41
     let parallaxFactor: CGFloat = 0.8
-    let statusBarHeight: CGFloat = 20
+    
+    private var startingPointY: CGFloat = 0
+    private let statusBarHeight: CGFloat = 20
+    // a little margin to make sure subbar will be hidden fully behind navbar
+    private let subbarMargin: CGFloat = 1
     
     let subbar = UIView()
     
@@ -25,6 +28,9 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
             scrollView?.delegate = self
         }
     }
+    
+    // keep a ref to the original scrollview delegate
+    // so we can forward callback to it
     private weak var originalDelegate: UIScrollViewDelegate?
     
     override init(frame: CGRect) {
@@ -45,22 +51,18 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         }
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
+    //MARK: - Scroll view delegate methods
     func scrollViewDidScroll(scrollView: UIScrollView) {
         originalDelegate?.scrollViewDidScroll?(scrollView)
         
         var frame = self.frame
+        var subFrame = subbar.frame
+        
         let bottomMargin = frame.height - statusBarHeight
         let scrollOffset = scrollView.contentOffset.y;
         let scrollDiff = scrollOffset - previousScrollViewY
         let scrollHeight = scrollView.frame.height
         let scrollContentSizeHeight = scrollView.contentSize.height + scrollView.contentInset.bottom
-//        print("offset: \(scrollOffset)")
-        // subbar
-        var subFrame = subbar.frame
         
         // There is a arbitrary scroll-down-threshold before navbar reappear
         // Checking conditions as follow:
@@ -80,15 +82,13 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
             return
         }
         
-        
-        
         // Scroll-up-threshold that equals to subber height
-        // So that subbar will move before navbar
+        // So that subbar will move up before navbar
         if scrollDiff > 0 && subbar.frame.maxY >= frame.maxY {
             print("scroll up threshold checkout")
             previousScrollViewY = scrollOffset
-            
         } else {
+            // navbar updating
             if scrollOffset <= -scrollView.contentInset.top {
                 frame.origin.y = statusBarHeight
             } else if scrollOffset + scrollHeight >= scrollContentSizeHeight {
@@ -101,11 +101,11 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         
         // subbar frame updating
         if scrollOffset <= -scrollView.contentInset.top {
-            subFrame.origin.y = 64
+            subFrame.origin.y = statusBarHeight + frame.height
         } else if scrollOffset + scrollHeight >= scrollContentSizeHeight {
-            subFrame.origin.y = frame.maxY - 5 - frame.height
+            subFrame.origin.y = frame.maxY - frame.height - subbarMargin
         } else {
-            subFrame.origin.y = min(64, max(frame.maxY - 5 - subFrame.height, subFrame.origin.y - scrollDiff))
+            subFrame.origin.y = min(statusBarHeight + frame.height, max(frame.maxY - subFrame.height - subbarMargin, subFrame.origin.y - scrollDiff))
         }
         subbar.frame = subFrame
         
@@ -115,11 +115,9 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         updateBarButtonItems(1 - percentHidden * 2)
         
         // adjust scroll indicator inset to match navbar position
-        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: frame.maxY + scrollUpThreshold - 5, left: 0, bottom: 0, right: 0)
+        scrollView.scrollIndicatorInsets = UIEdgeInsets(top: frame.maxY + scrollUpThreshold - subbarMargin, left: 0, bottom: 0, right: 0)
     
         previousScrollViewY = scrollView.contentOffset.y
-            
-        print("navbar y: \(frame.origin.y), subbar y: \(subbar.frame.origin.y)")
     }
     
     func scrollViewWillBeginDragging(scrollView: UIScrollView) {
@@ -142,7 +140,9 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         originalDelegate?.scrollViewDidEndDragging?(scrollView, willDecelerate: decelerate)
     }
     
-    func updateBarButtonItems(percent: CGFloat) {
+    
+    // MARK: - other utils
+    private func updateBarButtonItems(percent: CGFloat) {
         for (index, view) in subviews.enumerate() {
             if index > 0 && index < subviews.count - 1{
                 view.alpha = percent
@@ -157,30 +157,31 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
         }
     }
     
-    func stoppedScrolling() {
-        if subbar.frame.origin.y < 64 && subbar.frame.origin.y > 64 - subbar.frame.height {
-            animateSubbarTo(64, shouldAdjustScrollView: true)
+    private func stoppedScrolling() {
+        let topMargin = statusBarHeight + frame.height
+        if subbar.frame.origin.y < topMargin && subbar.frame.origin.y > topMargin - subbar.frame.height {
+            animateSubbarTo(topMargin, shouldAdjustScrollView: true)
             
         }
         
-        if frame.origin.y < statusBarHeight || subbar.frame.origin.y <= 64 - subbar.frame.height {
+        if frame.origin.y < statusBarHeight || subbar.frame.origin.y <= topMargin - subbar.frame.height {
             animateNavbarTo(-(frame.height - statusBarHeight))
             animateSubbarTo(-(subbar.frame.height - statusBarHeight), shouldAdjustScrollView: false)
         }
     }
     
-    func animateSubbarTo(y: CGFloat, shouldAdjustScrollView shouldAdjust: Bool ) {
+    private func animateSubbarTo(y: CGFloat, shouldAdjustScrollView shouldAdjust: Bool ) {
         UIView.animateWithDuration(0.2) {
             var frame = self.subbar.frame
             if shouldAdjust {
-                self.scrollView?.contentOffset.y += frame.origin.y - 64
+                self.scrollView?.contentOffset.y += frame.origin.y - self.statusBarHeight + self.frame.height
             }
             frame.origin.y = y
             self.subbar.frame = frame
         }
     }
     
-    func animateNavbarTo(y: CGFloat) {
+    private func animateNavbarTo(y: CGFloat) {
         UIView.animateWithDuration(0.2) {
             var frame = self.frame
             let alpha: CGFloat = frame.origin.y >= y ? 0 : 1
@@ -191,5 +192,9 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
             self.frame = frame
             self.updateBarButtonItems(alpha)
         }
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
 }
