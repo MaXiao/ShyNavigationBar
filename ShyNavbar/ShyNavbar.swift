@@ -24,6 +24,7 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
             if let bar = newValue {
                 scrollUpThreshold = bar.frame.height + subbarMargin
                 superview?.insertSubview(bar, belowSubview: self)
+                bar.frame = CGRect(origin: CGPoint(x: 0, y: frame.maxY), size: bar.frame.size)
             }
         }
     }

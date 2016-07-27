@@ -33,7 +33,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         scrollView.delegate = self
         
         let subbar = UIView()
-        subbar.frame = CGRect(x: 0, y: 64, width: view.frame.width, height: 40)
+        subbar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 40)
         subbar.backgroundColor = UIColor.blueColor()
         
         var insets = scrollView.contentInset
