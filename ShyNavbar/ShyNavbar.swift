@@ -19,21 +19,26 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
     // a little margin to make sure subbar will be hidden fully behind navbar
     private let subbarMargin: CGFloat = 1
     
+    weak var scrollView: UIScrollView? {
+        didSet {
+            oldValue?.delegate = originalDelegate
+            originalDelegate = scrollView?.delegate
+            scrollView?.delegate = self
+        }
+    }
+    
+    // Add subbar after scrollView assignment
+    // So we can adjust scrollview's inset and offset
     var subbar: UIView? {
         willSet {
             if let bar = newValue {
                 scrollUpThreshold = bar.frame.height + subbarMargin
                 superview?.insertSubview(bar, belowSubview: self)
                 bar.frame = CGRect(origin: CGPoint(x: 0, y: frame.maxY), size: bar.frame.size)
+                
+                scrollView?.contentInset.top += bar.frame.height
+                scrollView?.contentOffset.y -= bar.frame.height
             }
-        }
-    }
-    
-    weak var scrollView: UIScrollView? {
-        didSet {
-            oldValue?.delegate = originalDelegate
-            originalDelegate = scrollView?.delegate
-            scrollView?.delegate = self
         }
     }
     
