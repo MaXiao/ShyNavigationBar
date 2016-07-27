@@ -32,6 +32,10 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         scrollView.contentSize = CGSize(width: view.frame.width, height: 5000)
         scrollView.delegate = self
         
+        let subbar = UIView()
+        subbar.frame = CGRect(x: 0, y: 64, width: view.frame.width, height: 40)
+        subbar.backgroundColor = UIColor.blueColor()
+        
         var insets = scrollView.contentInset
         insets.top += 40
         scrollView.contentInset = insets
@@ -40,6 +44,7 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         
         if let navbar = navigationController?.navigationBar as? ShyNavbar {
             navbar.scrollView = scrollView
+            navbar.subbar = subbar
         }
         
         let label = UILabel(frame: CGRect(x: 0, y: 10, width: view.frame.width, height: 20))
