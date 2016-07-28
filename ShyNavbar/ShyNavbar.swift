@@ -186,7 +186,7 @@ class ShyNavbar: UINavigationBar, UIScrollViewDelegate {
             if let subbar = self.subbar {
                 var frame = subbar.frame
                 if shouldAdjust {
-                    self.scrollView?.contentOffset.y += frame.origin.y - self.statusBarHeight + self.frame.height
+                    self.scrollView?.contentOffset.y += frame.origin.y - (self.statusBarHeight + self.frame.height)
                 }
                 frame.origin.y = y
                 subbar.frame = frame
